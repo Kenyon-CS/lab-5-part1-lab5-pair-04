@@ -62,7 +62,51 @@ int main()                                          //Line 4
         cout << *it << " ";                         //Line 36
     cout << endl;                                   //Line 37
 
-    //system("pause");
-    return 0;                                       //Line 38
-}                                                   //Line 39
+    // ===== EXTRA TESTS (rotate, deleteSmallestFirstOccurrence, deleteAll, kthElement, deleteKth) =====
+    auto printList = [](const char* label, unorderedLinkedList<int>& L){
+        cout << label;
+        for (auto it2 = L.begin(); it2 != L.end(); ++it2) cout << *it2 << " ";
+        cout << endl;
+    };
 
+    cout << "\n--- EXTRA TESTS ---\n";
+
+    
+    unorderedLinkedList<int> L;
+    L.insertLast(3); L.insertLast(4); L.insertLast(5); L.insertLast(20); L.insertLast(1);
+    printList("Start L: ", L);
+
+    
+    L.rotate();
+    printList("After rotate (expect 4 5 20 1 3): ", L);
+
+    bool removedMin = L.deleteSmallestFirstOccurrence();
+    cout << "deleteSmallestFirstOccurrence returned: " << (removedMin ? "true" : "false") << endl;
+    printList("After deleteSmallestFirstOccurrence (expect 4 5 20 3): ", L);
+
+    
+    int removed5 = L.deleteAll(5);
+    cout << "deleteAll(5) removed: " << removed5 << endl;
+    printList("After deleteAll(5) (expect 4 20 3): ", L);
+
+    
+    cout << "kthElement(2) (expect 20): " << L.kthElement(2) << endl;
+
+    
+    L.deleteKth(3);
+    printList("After deleteKth(3) (expect 4 20): ", L);
+
+   
+    unorderedLinkedList<int> E;    
+    E.rotate();                    
+    cout << "On empty: deleteSmallestFirstOccurrence -> "
+         << (E.deleteSmallestFirstOccurrence() ? "true" : "false")
+         << " (expect false)\n";
+    cout << "On empty: deleteAll(42) removed -> " << E.deleteAll(42)
+         << " (expect 0)\n";
+    E.deleteKth(1);                
+    cout << "Tried deleteKth(1) on empty list (expect message above)\n";
+
+
+    return 0;                                       
+}                                                   

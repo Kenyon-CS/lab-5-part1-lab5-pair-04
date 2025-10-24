@@ -14,9 +14,13 @@
 using namespace std;
 
 template <class Type>
-//class unorderedLinkedList: public linkedListType<Type>
-class unorderedLinkedList: public linkedListType<int>
+
+//class unorderedLinkedList: public linkedListType<int>
+class unorderedLinkedList: public linkedListType<Type>
 {
+     using linkedListType<Type>::first;
+    using linkedListType<Type>::last;
+    using linkedListType<Type>::count;
 public:
     bool search(const Type& searchItem) const;
       //Function to determine whether searchItem is in the list.

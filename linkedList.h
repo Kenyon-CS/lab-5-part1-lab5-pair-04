@@ -198,6 +198,19 @@ public:
       //destructor
       //Deletes all the nodes from the list.
       //Postcondition: The list object is destroyed.
+    bool deleteSmallestFirstOccurrence();
+
+   
+    int deleteAll(const Type& x);
+
+    
+    Type kthElement(std::size_t k) const;
+
+    
+    void deleteKth(std::size_t k);
+
+    
+    void rotate();
 
 protected:
     int count; //variable to store the number of list elements
@@ -376,6 +389,130 @@ const linkedListType<Type>& linkedListType<Type>::operator=
     }//end else
 
      return *this;
+}
+
+template <class Type>
+bool linkedListType<Type>::deleteSmallestFirstOccurrence()
+{
+    if (first == NULL) return false;
+
+    nodeType<Type>* prevMin = NULL;
+    nodeType<Type>* minNode = first;
+
+    nodeType<Type>* prev = first;
+    nodeType<Type>* cur  = first->link;
+
+    while (cur != NULL) {
+        if (cur->info < minNode->info) {
+            minNode = cur;          
+            prevMin = prev;
+        }
+        prev = cur;
+        cur  = cur->link;
+    }
+
+    if (minNode == first) {
+        first = first->link;
+        if (minNode == last) last = NULL; 
+    } else {
+        prevMin->link = minNode->link;
+        if (minNode == last) last = prevMin;
+    }
+    delete minNode;
+    --count;
+    return true;
+}
+
+template <class Type>
+int linkedListType<Type>::deleteAll(const Type& x)
+{
+    int removed = 0;
+    nodeType<Type>* prev = NULL;
+    nodeType<Type>* cur  = first;
+
+    while (cur != NULL) {
+        if (cur->info == x) {
+            nodeType<Type>* toDel = cur;
+            cur = cur->link;
+
+            if (toDel == first) {
+                first = cur;
+            } else {
+                prev->link = cur;
+            }
+
+            if (toDel == last) {
+                last = prev; 
+            }
+
+            delete toDel;
+            --count;
+            ++removed;
+        } else {
+            prev = cur;
+            cur  = cur->link;
+        }
+    }
+    return removed;
+}
+
+
+template <class Type>
+Type linkedListType<Type>::kthElement(std::size_t k) const
+{
+    if (k == 0 || k > static_cast<std::size_t>(count)) {
+        std::cerr << "kthElement: k out of range.\n";
+        std::exit(EXIT_FAILURE); // TERMINATE
+    }
+
+    nodeType<Type>* cur = first;
+    for (std::size_t i = 1; i < k; ++i) {
+        cur = cur->link;
+    }
+    return cur->info;
+}
+
+// Delete the k-th node (1-based). PrintS A MESSAGE IF INVALID
+template <class Type>
+void linkedListType<Type>::deleteKth(std::size_t k)
+{
+    if (k == 0 || k > static_cast<std::size_t>(count)) {
+        std::cout << "deleteKth: k out of range; no node deleted.\n";
+        return;
+    }
+
+    if (k == 1) {
+        nodeType<Type>* del = first;
+        first = first->link;
+        if (del == last) last = NULL; // SINGLE NODE CASE
+        --count;
+        return;
+    }
+
+    nodeType<Type>* prev = first;
+    for (std::size_t i = 2; i < k; ++i) {
+        prev = prev->link; // #K PREDECESSOR
+    }
+
+    nodeType<Type>* del = prev->link;        // NODE #K
+    prev->link = del->link;
+    if (del == last) last = prev;
+    delete del;
+    --count;
+}
+
+// Move the first node to the end.
+template <class Type>
+void linkedListType<Type>::rotate()
+{
+    if (first == NULL || first == last) return; // NO NODES OR 1 NODE
+
+    nodeType<Type>* NEWTAIL = first;
+    first = first->link;
+
+    last->link = NEWTAIL;   // append old head at tail
+    NEWTAIL->link = NULL;
+    last = NEWTAIL;
 }
 
 #endif
